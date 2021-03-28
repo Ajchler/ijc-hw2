@@ -1,0 +1,5 @@
+ahoj kamarade
+tohle je testovaci soubor
+
+prazdny radek nad timto
+snad ti to funguje
