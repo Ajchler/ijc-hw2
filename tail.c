@@ -3,7 +3,59 @@
 #include <string.h>
 #include <ctype.h>
 
-#define MAX_SIZE 512
+// 511 characters + end of string + newline
+#define MAX_SIZE 513
+
+char **alloc_buffer(long to_print) {
+	char **buffer = malloc(to_print * sizeof(char *));
+	if (!buffer) {
+		fprintf(stderr, "ERROR: allocation failed");
+		return NULL;
+	}
+	for (int i = 0; i < to_print; i++) {
+		// if allocating a row failed print error and free what was already allocated
+		if (!(buffer[i] = malloc(MAX_SIZE))) {
+			fprintf(stderr, "ERROR: allocation failed");
+			for (int j = i - 1; j >= 0; j--) {
+				free(buffer[j]);
+				free(buffer);
+			}	
+			return NULL;
+		}
+	}
+	return buffer;
+}
+
+void free_buffer(char **buffer, long to_print) {
+	for (int i = 0; i < to_print; i++)
+		free(buffer[i]);
+	free(buffer);
+
+}
+
+int read_lines(FILE *input, long to_print) {
+	long i = 0;
+	char **buffer = alloc_buffer(to_print);
+	char line[MAX_SIZE] = "";
+	if (!buffer)
+		return -1;
+	while (fgets(line, MAX_SIZE, input) != NULL) {
+		strncpy(buffer[i], line, MAX_SIZE);
+		// if a line was longer than maximum size, insert a newline
+		while (!strchr(line, '\n')) {
+			buffer[i][MAX_SIZE - 2] = '\n';
+			fgets(line, MAX_SIZE, input);
+		}
+		i = (i + 1) % to_print;
+	}
+
+	for (int j = i; j != i - 1; j = (j + 1) % to_print) {
+		printf("%s", buffer[j]);
+	}
+	printf("%s", buffer[i - 1]);
+	free_buffer(buffer, to_print);
+	return 0;
+}
 
 int main(int argc, char *argv[]) {
 	long to_print = 10;
@@ -33,7 +85,7 @@ int main(int argc, char *argv[]) {
 			}
 			else
 				fprintf(stderr, "ERROR: invalid arguments");
-
+			// 3 arguments given, last one is name of a file
 			if (argc == 4)
 				filename = argv[argc - 1];
 			break;
@@ -49,14 +101,10 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	fclose(input);
+	if (read_lines(input, to_print) < 0)
+		return 1;
 
-	/*
-	FILE *fp = fopen(argv[1], "rw");
-	fp = stdin;
-	while (fgets(string, 99, fp) != NULL)
-			printf("%s", string);
-	fclose(fp);
-	*/
+	if (filename)
+		fclose(input);
 	return 0;
 }
