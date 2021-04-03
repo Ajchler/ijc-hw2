@@ -1,3 +1,9 @@
+// tail.c
+// Řešení IJC-DU2, první ukol
+// Autor: Vojtěch Eichler (xiechl01)
+// Fakulta informačních technologií VUT Brno
+// Datum: 3. 4. 2021
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
