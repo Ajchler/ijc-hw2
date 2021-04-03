@@ -33,12 +33,14 @@ void free_buffer(char **buffer, long to_print) {
 
 }
 
-int read_lines(FILE *input, long to_print) {
+int last_lines(FILE *input, long to_print) {
 	long i = 0;
+	long break_point = 0;
 	char **buffer = alloc_buffer(to_print);
 	char line[MAX_SIZE] = "";
 	if (!buffer)
 		return -1;
+	// reading from file
 	while (fgets(line, MAX_SIZE, input) != NULL) {
 		strncpy(buffer[i], line, MAX_SIZE);
 		// if a line was longer than maximum size, insert a newline
@@ -48,17 +50,34 @@ int read_lines(FILE *input, long to_print) {
 		}
 		i = (i + 1) % to_print;
 	}
-
-	for (int j = i; j != i - 1; j = (j + 1) % to_print) {
+	// finding index of last line
+	break_point = i == 0 ? to_print - 1 : i - 1;
+	for (int j = i; j != break_point; j = (j + 1) % to_print) {
 		printf("%s", buffer[j]);
 	}
-	printf("%s", buffer[i - 1]);
+	printf("%s", buffer[break_point]);
 	free_buffer(buffer, to_print);
 	return 0;
 }
 
+void write_lines(FILE *input, long line_number) {
+	long read = 0;
+	char line[MAX_SIZE] = "";
+	while (fgets(line, MAX_SIZE, input) != NULL) {
+		// if a line was longer than 511 characters insert newline and read
+		// the rest of a line
+		while (!strchr(line, '\n')) {
+			line[MAX_SIZE - 2] = '\n';
+			fgets(line, MAX_SIZE, input);
+		}
+		if (read >= line_number - 1)
+			printf("%s", line);
+		read++;
+	}
+}
+
 int main(int argc, char *argv[]) {
-	long to_print = 10;
+	long count = 10;
 	FILE *input = stdin;
 	char *filename = NULL;
 	
@@ -77,14 +96,16 @@ int main(int argc, char *argv[]) {
 			// first argument should be -n flag
 			if (!strcmp(argv[1], "-n")) {
 				// converting argument after -n to a number
-				to_print = strtol(argv[2], NULL, 10);
-				if (to_print == 0) {
+				count = strtol(argv[2], NULL, 10);
+				if (count == 0) {
 					fprintf(stderr, "ERROR: -n flag was given invalid argument");
 					return 1;
 				}
 			}
-			else
+			else {
 				fprintf(stderr, "ERROR: invalid arguments");
+				return 1;
+			}
 			// 3 arguments given, last one is name of a file
 			if (argc == 4)
 				filename = argv[argc - 1];
@@ -92,6 +113,7 @@ int main(int argc, char *argv[]) {
 
 		default:
 			fprintf(stderr, "ERROR: invalid arguments");
+			return 1;
 	}
 
 	if (filename)
@@ -100,9 +122,23 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "ERROR: failed opening the file\n");
 		return 1;
 	}
+	
+	// if -n flag was given and the number given contains plus, write lines from n to the end
+	if (argc > 2)
+		if (strchr(argv[2], '+')) {
+			write_lines(input, count);
+			if (filename) {
+				fclose(input);
+				return 0;
+			}
+		}
 
-	if (read_lines(input, to_print) < 0)
+	// if number given by user contains '+' then print all lines from nth line
+	if (last_lines(input, count) < 0) {
+		if (filename)
+			fclose(input);
 		return 1;
+	}
 
 	if (filename)
 		fclose(input);
