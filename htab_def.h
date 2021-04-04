@@ -10,15 +10,17 @@
 #define HTAB_DEF
 
 struct htab {
+	// number of records inside hash table
 	size_t size;
+	// size of hashtable
 	size_t arr_size;
 	// flexible array member
 	struct htab_item *items[];
 };
 
-struct htab_item {
+typedef struct htab_item {
 	struct htab_pair pair;
 	struct htab_item *next;
-};
+} htab_item_t;
 
 #endif
