@@ -20,6 +20,7 @@ void htab_clear(htab_t *t) {
 			free(item);
 			item = tmp;
 		}
+		t->items[i] = NULL;
 	}
 	t->size = 0;
 }
