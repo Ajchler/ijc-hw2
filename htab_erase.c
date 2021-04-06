@@ -25,6 +25,7 @@ bool htab_erase(htab_t *t, htab_key_t key) {
 			free((char *)item->pair.key);
 			free(item);
 			t->items[index] = tmp;
+			t->size--;
 			return true;
 		}
 	} else
@@ -37,6 +38,7 @@ bool htab_erase(htab_t *t, htab_key_t key) {
 			item->next = item->next->next;
 			free((char *)tmp->pair.key);
 			free(tmp);
+			t->size--;
 			return true;
 		}
 		item = item->next;

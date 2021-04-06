@@ -36,6 +36,7 @@ htab_pair_t *htab_lookup_add(htab_t *t, htab_key_t key) {
 		// copy key given by user to hash table
 		strcpy((char *)t->items[index]->pair.key, key);
 		t->items[index]->pair.value = 0;
+		t->size++;
 		return &(t->items[index]->pair);
 	}
 	
@@ -65,6 +66,7 @@ htab_pair_t *htab_lookup_add(htab_t *t, htab_key_t key) {
 		return NULL;
 	}
 	strcpy((char *)item->next->pair.key, key);
+	t->size++;	
 	item->next->pair.value = 0;
 	return &(item->next->pair);
 }
