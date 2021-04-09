@@ -18,6 +18,7 @@ bool htab_erase(htab_t *t, htab_key_t key) {
 	index = index % t->arr_size;
 	
 	// if first record is the one I am looking for, erase it
+	// also checks wherever there is a record at index
 	item = t->items[index];
 	if (item) {
 		if (!(strcmp(key, item->pair.key))) {
