@@ -21,14 +21,14 @@ htab_pair_t *htab_lookup_add(htab_t *t, htab_key_t key) {
 	// there are no records at index
 	if (!item) {
 		// alloc new item
-		t->items[index] = malloc(sizeof(htab_item_t *));
-		if (!t->items[index])
+		t->items[index] = malloc(sizeof(htab_item_t));
+		if (!(t->items[index]))
 			return NULL;
 		t->items[index]->next = NULL;
 		// alloc key inside pair, allocating length of key + \0
 		t->items[index]->pair.key = malloc(strlen(key) + 1);
 		// if allocation failed, free what was alloced and return
-		if (!t->items[index]->pair.key) {
+		if (!(t->items[index]->pair.key)) {
 			free(t->items[index]);
 			t->items[index] = NULL;
 			return NULL;
@@ -48,19 +48,19 @@ htab_pair_t *htab_lookup_add(htab_t *t, htab_key_t key) {
 	
 	// cycling through all values and looking for key
 	while (item->next) {
-		if (!(strcmp(key, item->next->pair.key))) {
-			return &(item->pair);
+		if (!(strcmp(item->next->pair.key, key))) {
+			return &(item->next->pair);
 		}
 		item = item->next;
 	}
 
 	// key wasn't found, alloc new item
-	item->next = malloc(sizeof(htab_item_t *));
+	item->next = malloc(sizeof(htab_item_t));
 	if (!item->next)
 		return NULL;
 	item->next->next = NULL;
 	item->next->pair.key = malloc(strlen(key) + 1);
-	if (!item->next->pair.key) {
+	if (!(item->next->pair.key)) {
 		free(item->next);
 		item->next = NULL;
 		return NULL;
