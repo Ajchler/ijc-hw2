@@ -19,7 +19,8 @@
 #define ARRAY_SIZE 10781
 
 void print_pair(htab_pair_t *data) {
-	printf("%s\t%d",data->key, data->value);
+	// TODO: PRINT TO STDERR IF WORD WAS LONGER
+	printf("%s\t%d\n", data->key, data->value);
 }
 
 int main(void) {
@@ -27,14 +28,20 @@ int main(void) {
 	char word[MAX_SIZE];
 	htab_pair_t *data;
 	htab_t *hash_table = htab_init(ARRAY_SIZE);
+	// checking if allocation failed
 	if (!hash_table) {
 		fprintf(stderr, "ERROR: Hash table allocation failed");
 		return 1;
 	}
-	
+
+	// reading words from stdin
 	while (read_word(word, MAX_SIZE, f) != EOF) {
-		
+		data = htab_lookup_add(hash_table, word);
+		data->value++;
 	}
+	
+	// calling function print_pair for each pair in hash table
+	htab_for_each(hash_table, &print_pair);
 
 	htab_free(hash_table);	
 	return 0;
