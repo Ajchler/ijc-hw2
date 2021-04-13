@@ -16,7 +16,7 @@ all: tail wordcount wordcount-dynamic
 tail:
 
 wordcount: io.c wordcount.c libhtab.a
-	$(CC) $(CFLAGS) wordcount.c libhtab.a -o wordcount 
+	$(CC) $(CFLAGS) -static wordcount.c libhtab.a -o wordcount 
 
 wordcount-dynamic: io.c wordcount.c libhtab.so
 	$(CC) $(CFLAGS) wordcount.c -Wl,-rpath,'.' -L. -lhtab -o wordcount-dynamic
