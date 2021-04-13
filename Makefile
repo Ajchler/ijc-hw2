@@ -4,7 +4,7 @@
 # Fakulta informačních technologií VUT Brno
 # Datum 13. 4. 2021
 
-CFLAGS= -g -std=c99 -Wall -Wextra -pedantic
+CFLAGS=-g -std=c99 -Wall -Wextra -pedantic
 CC=gcc
 LIB_SOURCE_FILES= htab_find.c htab_init.c htab_bucket_count.c\
 		   		  htab_for_each.c htab_lookup_add.c htab_clear.c\

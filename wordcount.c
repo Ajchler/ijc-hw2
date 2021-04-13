@@ -42,6 +42,15 @@ int main(void) {
 	
 	// calling function print_pair for each pair in hash table
 	htab_for_each(hash_table, &print_pair);
+	
+	// testing htab_move function if MOVETEST is defined,
+	// add -DMOVETEST to CFLAGS in makefile to test this
+	#ifdef MOVETEST
+	htab_t *new_hash_table = htab_move(3000, hash_table);
+	if (new_hash_table)
+		htab_free(new_hash_table);
+
+	#endif
 
 	htab_free(hash_table);	
 	return 0;
