@@ -40,6 +40,7 @@ void free_buffer(char **buffer, long to_print) {
 }
 
 int last_lines(FILE *input, long to_print) {
+	int print_error = 1;
 	long i = 0;
 	long break_point = 0;
 	char **buffer = alloc_buffer(to_print);
@@ -51,6 +52,11 @@ int last_lines(FILE *input, long to_print) {
 		strncpy(buffer[i], line, MAX_SIZE);
 		// if a line was longer than maximum size, insert a newline
 		while (!strchr(line, '\n')) {
+			// if error wasn't printed out yet
+			if (print_error) {
+				print_error = 0;
+				fprintf(stderr, "ERROR: A line was too long");
+			}
 			buffer[i][MAX_SIZE - 2] = '\n';
 			fgets(line, MAX_SIZE, input);
 		}
@@ -69,10 +75,15 @@ int last_lines(FILE *input, long to_print) {
 void write_lines(FILE *input, long line_number) {
 	long read = 0;
 	char line[MAX_SIZE] = "";
+	int print_error = 1;
 	while (fgets(line, MAX_SIZE, input) != NULL) {
 		// if a line was longer than 511 characters insert newline and read
 		// the rest of a line
 		while (!strchr(line, '\n')) {
+			if (print_error) {
+				print_error = 0;
+				fprintf(stderr, "ERROR: A line was too long");
+			}
 			line[MAX_SIZE - 2] = '\n';
 			fgets(line, MAX_SIZE, input);
 		}
