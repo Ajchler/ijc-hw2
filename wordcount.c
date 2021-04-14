@@ -24,6 +24,8 @@ void print_pair(htab_pair_t *data) {
 }
 
 int main(void) {
+	int print_error = 1;
+	int letters_read = 0;
 	FILE *f = stdin;
 	char word[MAX_SIZE];
 	htab_pair_t *data;
@@ -35,7 +37,11 @@ int main(void) {
 	}
 
 	// reading words from stdin
-	while (read_word(word, MAX_SIZE, f) != EOF) {
+	while ((letters_read = read_word(word, MAX_SIZE, f)) != EOF) {
+		if ((letters_read >= MAX_SIZE) && print_error) {
+			print_error = 0;
+			fprintf(stderr, "ERROR: Read word longer than internal limit");
+		}
 		data = htab_lookup_add(hash_table, word);
 		data->value++;
 	}
