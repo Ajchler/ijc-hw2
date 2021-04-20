@@ -29,6 +29,7 @@ int main(void) {
 	FILE *f = stdin;
 	char word[MAX_SIZE];
 	htab_pair_t *data;
+
 	htab_t *hash_table = htab_init(ARRAY_SIZE);
 	// checking if allocation failed
 	if (!hash_table) {
