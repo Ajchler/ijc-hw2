@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "htab.h"
 #include "io.c"
 
@@ -18,8 +19,18 @@
 // prime number because hashing works better if mod is prime
 #define ARRAY_SIZE 10781
 
+#ifdef HASHTEST
+size_t htab_hash_function(htab_key_t str) { 
+    uint32_t h = 5381; 
+	printf("testvole");
+    const unsigned char *p; 
+    for(p=(const unsigned char*)str; *p!='\0'; p++) 
+		h = ((h << 5) + h) + *p; 
+    return h; 
+}
+#endif
+
 void print_pair(htab_pair_t *data) {
-	// TODO: PRINT TO STDERR IF WORD WAS LONGER
 	printf("%s\t%d\n", data->key, data->value);
 }
 
