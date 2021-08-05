@@ -22,7 +22,6 @@
 #ifdef HASHTEST
 size_t htab_hash_function(htab_key_t str) { 
     uint32_t h = 5381; 
-	printf("testvole");
     const unsigned char *p; 
     for(p=(const unsigned char*)str; *p!='\0'; p++) 
 		h = ((h << 5) + h) + *p; 
